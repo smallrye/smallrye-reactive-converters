@@ -1,6 +1,6 @@
 # SmallRye Reactive Converters
 
-[![Build Status](https://github.com/smallrye/smallrye-reactive-converters/workflows/SmallRye%20Build/badge.svg?branch=main)]( https://github.com/smallrye/smallrye-reactive-converters/actions?query=workflow%3A%22SmallRye+Build%22)
+[![SmallRye Build](https://github.com/smallrye/smallrye-reactive-converters/actions/workflows/build.yml/badge.svg)](https://github.com/smallrye/smallrye-reactive-converters/actions/workflows/build.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=smallrye_smallrye-reactive-converters&metric=alert_status)](https://sonarcloud.io/dashboard?id=smallrye_smallrye-reactive-converters)
 [![License](https://img.shields.io/github/license/smallrye/smallrye-fault-tolerance.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Maven](https://img.shields.io/maven-central/v/io.smallrye.reactive/smallrye-reactive-utilities-projects?color=green)]()
