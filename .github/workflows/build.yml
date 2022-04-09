@@ -40,6 +40,7 @@ jobs:
         name: set up jdk ${{matrix.java}}
         with:
           java-version: ${{matrix.java}}
+          distribution: 'temurin'
 
       - name: build with maven
         run: mvn -B formatter:validate verify --file pom.xml
@@ -54,7 +55,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
         with:
-          java-version: 11      
+          java-version: 11
+          distribution: 'temurin'
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
