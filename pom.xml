@@ -43,7 +43,6 @@
     </scm>
 
     <properties>
-        <vertx.version>4.2.6</vertx.version>
         <mutiny.version>1.4.0</mutiny.version>
         <jackson.version>2.13.2</jackson.version>
         <reactive-streams.version>1.0.3</reactive-streams.version>
@@ -52,8 +51,6 @@
         <rxjava2.version>2.2.21</rxjava2.version>
         <rxjava1.version>1.3.8</rxjava1.version>
         <reactor-core.version>3.4.16</reactor-core.version>
-
-        <testcontainers.version>1.16.3</testcontainers.version>
 
         <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
@@ -75,21 +72,6 @@
                 <artifactId>mutiny</artifactId>
                 <version>${mutiny.version}</version>
             </dependency>
-            <dependency>
-                <groupId>io.vertx</groupId>
-                <artifactId>vertx-dependencies</artifactId>
-                <version>${vertx.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>testcontainers-bom</artifactId>
-                <version>${testcontainers.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
             <dependency>
                 <groupId>io.reactivex.rxjava3</groupId>
                 <artifactId>rxjava</artifactId>
