@@ -48,11 +48,11 @@ public class MultiFromRSPublisherTest extends FromRSPublisherTCK<Multi> {
     @SuppressWarnings("unchecked")
     @Override
     protected List<String> getAll(Multi instance) {
-        return (List<String>) instance.collectItems().asList().await().indefinitely();
+        return (List<String>) instance.collect().asList().await().indefinitely();
     }
 
     @Override
     protected void consume(Multi instance) {
-        instance.collectItems().last().await().indefinitely();
+        instance.collect().last().await().indefinitely();
     }
 }
