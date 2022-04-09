@@ -56,7 +56,7 @@ public abstract class ToRSPublisherTCK<T> {
         }
         Publisher<String> publisher = converter().toRSPublisher(instance.get());
         String res = Multi.createFrom().publisher(publisher)
-                .collectItems().first()
+                .collect().first()
                 .await().indefinitely();
         assertThat(res).isEqualTo(uuid);
     }
@@ -71,7 +71,7 @@ public abstract class ToRSPublisherTCK<T> {
         }
         Publisher<String> publisher = converter().toRSPublisher(instance.get());
         String res = Multi.createFrom().publisher(publisher)
-                .collectItems().first()
+                .collect().first()
                 .await().indefinitely();
         assertThat(res).isEqualTo(uuid);
     }
@@ -82,7 +82,7 @@ public abstract class ToRSPublisherTCK<T> {
         Publisher<String> publisher = converter().toRSPublisher(instance);
         try {
             Multi.createFrom().publisher(publisher)
-                    .collectItems().asList().await().indefinitely();
+                    .collect().asList().await().indefinitely();
             fail("Exception expected");
         } catch (Exception e) {
             assertThat(e).isInstanceOf(BoomException.class);
@@ -95,7 +95,7 @@ public abstract class ToRSPublisherTCK<T> {
         Publisher<String> publisher = converter().toRSPublisher(instance);
         try {
             Multi.createFrom().publisher(publisher)
-                    .collectItems().asList().await().indefinitely();
+                    .collect().asList().await().indefinitely();
             fail("Exception expected");
         } catch (Exception e) {
             assertThat(e).isInstanceOf(BoomException.class);
@@ -112,7 +112,7 @@ public abstract class ToRSPublisherTCK<T> {
         Publisher<String> publisher = converter().toRSPublisher(optional.get());
         try {
             Multi.createFrom().publisher(publisher)
-                    .collectItems().asList().await().indefinitely();
+                    .collect().asList().await().indefinitely();
             fail("NullPointerException expected");
         } catch (Exception e) {
             assertThat(e).isInstanceOf(NullPointerException.class);
@@ -132,7 +132,7 @@ public abstract class ToRSPublisherTCK<T> {
         Publisher<String> publisher = converter().toRSPublisher(optional.get());
         try {
             Multi.createFrom().publisher(publisher)
-                    .collectItems().asList().await().indefinitely();
+                    .collect().asList().await().indefinitely();
             fail("NullPointerException expected");
         } catch (Exception e) {
             assertThat(e).isInstanceOf(NullPointerException.class);
@@ -149,7 +149,7 @@ public abstract class ToRSPublisherTCK<T> {
         Publisher<String> publisher = converter().toRSPublisher(optional.get());
         try {
             Multi.createFrom().publisher(publisher)
-                    .collectItems().asList().await().indefinitely();
+                    .collect().asList().await().indefinitely();
             fail("NullPointerException expected");
         } catch (Exception e) {
             assertThat(e).isInstanceOf(NullPointerException.class);
@@ -168,7 +168,7 @@ public abstract class ToRSPublisherTCK<T> {
         }
         Publisher<String> publisher = converter().toRSPublisher(instance.get());
         List<String> list = Multi.createFrom().publisher(publisher)
-                .collectItems().asList()
+                .collect().asList()
                 .await().indefinitely();
         assertThat(list).containsExactly(uuid, uuid2, uuid3);
     }
@@ -185,7 +185,7 @@ public abstract class ToRSPublisherTCK<T> {
         Publisher<String> publisher = converter().toRSPublisher(instance.get());
         try {
             Multi.createFrom().publisher(publisher)
-                    .collectItems().asList().await().indefinitely();
+                    .collect().asList().await().indefinitely();
             fail("Boom exception expected");
         } catch (Exception e) {
             assertThat(e).isInstanceOf(BoomException.class);
@@ -204,7 +204,7 @@ public abstract class ToRSPublisherTCK<T> {
 
         Future<?> future = Executors.newSingleThreadExecutor().submit(() -> {
             Multi.createFrom().publisher(publisher)
-                    .collectItems().asList().await().indefinitely();
+                    .collect().asList().await().indefinitely();
             latch.countDown();
         });
 
@@ -221,7 +221,7 @@ public abstract class ToRSPublisherTCK<T> {
             return;
         }
         Publisher<String> publisher = converter().toRSPublisher(instance.get());
-        assertThat(Multi.createFrom().publisher(publisher).collectItems().asList().await().indefinitely()).isEmpty();
+        assertThat(Multi.createFrom().publisher(publisher).collect().asList().await().indefinitely()).isEmpty();
     }
 
     @Test
@@ -232,7 +232,7 @@ public abstract class ToRSPublisherTCK<T> {
             return;
         }
         Publisher<String> publisher = converter().toRSPublisher(instance.get());
-        assertThat(Multi.createFrom().publisher(publisher).collectItems().asList().await().indefinitely()).isEmpty();
+        assertThat(Multi.createFrom().publisher(publisher).collect().asList().await().indefinitely()).isEmpty();
     }
 
     @Test
@@ -243,7 +243,7 @@ public abstract class ToRSPublisherTCK<T> {
             return;
         }
         Publisher<String> publisher = converter().toRSPublisher(instance.get());
-        assertThat(Multi.createFrom().publisher(publisher).collectItems().asList().await().indefinitely()).isEmpty();
+        assertThat(Multi.createFrom().publisher(publisher).collect().asList().await().indefinitely()).isEmpty();
     }
 
 }

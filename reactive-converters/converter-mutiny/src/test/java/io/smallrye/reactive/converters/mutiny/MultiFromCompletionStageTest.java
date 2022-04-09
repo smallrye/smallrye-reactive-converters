@@ -27,7 +27,7 @@ public class MultiFromCompletionStageTest extends FromCompletionStageTCK<Multi> 
 
     @Override
     protected String getOne(Multi instance) {
-        return (String) instance.collectItems().first().await().indefinitely();
+        return (String) instance.collect().first().await().indefinitely();
     }
 
     @SuppressWarnings("unchecked")
