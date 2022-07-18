@@ -3,6 +3,7 @@ package io.smallrye.reactive.converters.rxjava2;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Flow;
 
 import org.reactivestreams.Publisher;
 
@@ -10,6 +11,8 @@ import io.reactivex.BackpressureStrategy;
 import io.reactivex.Emitter;
 import io.reactivex.Observable;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import mutiny.zero.flow.adapters.AdaptersToFlow;
+import mutiny.zero.flow.adapters.AdaptersToReactiveStreams;
 
 /**
  * Converter handling the RX Java 2 {@link Observable} type.
@@ -71,6 +74,11 @@ public class ObservableConverter implements ReactiveTypeConverter<Observable> {
     }
 
     @Override
+    public <X> Flow.Publisher<X> toFlowPublisher(Observable instance) {
+        return AdaptersToFlow.publisher(toRSPublisher(instance));
+    }
+
+    @Override
     public Observable fromPublisher(Publisher publisher) {
         return Observable.fromPublisher(publisher);
     }
@@ -90,6 +98,11 @@ public class ObservableConverter implements ReactiveTypeConverter<Observable> {
     @Override
     public <X> Observable fromCompletionStage(CompletionStage<X> cs) {
         return Observable.create(emitter -> toStreamEvents(cs, emitter));
+    }
+
+    @Override
+    public <X> Observable fromFlowPublisher(Flow.Publisher<X> publisher) {
+        return fromPublisher(AdaptersToReactiveStreams.publisher(publisher));
     }
 
     @Override

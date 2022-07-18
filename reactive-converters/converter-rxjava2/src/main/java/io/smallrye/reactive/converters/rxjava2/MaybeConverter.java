@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Flow;
 
 import org.reactivestreams.Publisher;
 
@@ -12,6 +13,8 @@ import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.MaybeEmitter;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import mutiny.zero.flow.adapters.AdaptersToFlow;
+import mutiny.zero.flow.adapters.AdaptersToReactiveStreams;
 
 /**
  * Converter handling the RX Java 2 {@link Maybe} type.
@@ -100,8 +103,19 @@ public class MaybeConverter implements ReactiveTypeConverter<Maybe> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public <X> Flow.Publisher<X> toFlowPublisher(Maybe instance) {
+        return AdaptersToFlow.publisher(instance.toFlowable());
+    }
+
+    @Override
     public <X> Maybe fromPublisher(Publisher<X> publisher) {
         return Flowable.fromPublisher(publisher).firstElement();
+    }
+
+    @Override
+    public <X> Maybe fromFlowPublisher(Flow.Publisher<X> publisher) {
+        return fromPublisher(AdaptersToReactiveStreams.publisher(publisher));
     }
 
     @Override

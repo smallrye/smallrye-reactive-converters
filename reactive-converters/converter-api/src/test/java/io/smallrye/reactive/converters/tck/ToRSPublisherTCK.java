@@ -16,6 +16,7 @@ import org.reactivestreams.Publisher;
 
 import io.smallrye.mutiny.Multi;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import mutiny.zero.flow.adapters.AdaptersToFlow;
 
 @SuppressWarnings("CatchMayIgnoreException")
 public abstract class ToRSPublisherTCK<T> {
@@ -55,7 +56,7 @@ public abstract class ToRSPublisherTCK<T> {
             return;
         }
         Publisher<String> publisher = converter().toRSPublisher(instance.get());
-        String res = Multi.createFrom().publisher(publisher)
+        String res = Multi.createFrom().publisher(AdaptersToFlow.publisher(publisher))
                 .collect().first()
                 .await().indefinitely();
         assertThat(res).isEqualTo(uuid);
@@ -70,7 +71,7 @@ public abstract class ToRSPublisherTCK<T> {
             return;
         }
         Publisher<String> publisher = converter().toRSPublisher(instance.get());
-        String res = Multi.createFrom().publisher(publisher)
+        String res = Multi.createFrom().publisher(AdaptersToFlow.publisher(publisher))
                 .collect().first()
                 .await().indefinitely();
         assertThat(res).isEqualTo(uuid);
@@ -81,7 +82,7 @@ public abstract class ToRSPublisherTCK<T> {
         T instance = createInstanceFailingImmediately(new BoomException());
         Publisher<String> publisher = converter().toRSPublisher(instance);
         try {
-            Multi.createFrom().publisher(publisher)
+            Multi.createFrom().publisher(AdaptersToFlow.publisher(publisher))
                     .collect().asList().await().indefinitely();
             fail("Exception expected");
         } catch (Exception e) {
@@ -94,7 +95,7 @@ public abstract class ToRSPublisherTCK<T> {
         T instance = createInstanceFailingAsynchronously(new BoomException());
         Publisher<String> publisher = converter().toRSPublisher(instance);
         try {
-            Multi.createFrom().publisher(publisher)
+            Multi.createFrom().publisher(AdaptersToFlow.publisher(publisher))
                     .collect().asList().await().indefinitely();
             fail("Exception expected");
         } catch (Exception e) {
@@ -111,7 +112,7 @@ public abstract class ToRSPublisherTCK<T> {
         }
         Publisher<String> publisher = converter().toRSPublisher(optional.get());
         try {
-            Multi.createFrom().publisher(publisher)
+            Multi.createFrom().publisher(AdaptersToFlow.publisher(publisher))
                     .collect().asList().await().indefinitely();
             fail("NullPointerException expected");
         } catch (Exception e) {
@@ -131,7 +132,7 @@ public abstract class ToRSPublisherTCK<T> {
         }
         Publisher<String> publisher = converter().toRSPublisher(optional.get());
         try {
-            Multi.createFrom().publisher(publisher)
+            Multi.createFrom().publisher(AdaptersToFlow.publisher(publisher))
                     .collect().asList().await().indefinitely();
             fail("NullPointerException expected");
         } catch (Exception e) {
@@ -148,7 +149,7 @@ public abstract class ToRSPublisherTCK<T> {
         }
         Publisher<String> publisher = converter().toRSPublisher(optional.get());
         try {
-            Multi.createFrom().publisher(publisher)
+            Multi.createFrom().publisher(AdaptersToFlow.publisher(publisher))
                     .collect().asList().await().indefinitely();
             fail("NullPointerException expected");
         } catch (Exception e) {
@@ -167,7 +168,7 @@ public abstract class ToRSPublisherTCK<T> {
             return;
         }
         Publisher<String> publisher = converter().toRSPublisher(instance.get());
-        List<String> list = Multi.createFrom().publisher(publisher)
+        List<String> list = Multi.createFrom().publisher(AdaptersToFlow.publisher(publisher))
                 .collect().asList()
                 .await().indefinitely();
         assertThat(list).containsExactly(uuid, uuid2, uuid3);
@@ -184,7 +185,7 @@ public abstract class ToRSPublisherTCK<T> {
         }
         Publisher<String> publisher = converter().toRSPublisher(instance.get());
         try {
-            Multi.createFrom().publisher(publisher)
+            Multi.createFrom().publisher(AdaptersToFlow.publisher(publisher))
                     .collect().asList().await().indefinitely();
             fail("Boom exception expected");
         } catch (Exception e) {
@@ -203,7 +204,7 @@ public abstract class ToRSPublisherTCK<T> {
         CountDownLatch latch = new CountDownLatch(1);
 
         Future<?> future = Executors.newSingleThreadExecutor().submit(() -> {
-            Multi.createFrom().publisher(publisher)
+            Multi.createFrom().publisher(AdaptersToFlow.publisher(publisher))
                     .collect().asList().await().indefinitely();
             latch.countDown();
         });
@@ -221,7 +222,8 @@ public abstract class ToRSPublisherTCK<T> {
             return;
         }
         Publisher<String> publisher = converter().toRSPublisher(instance.get());
-        assertThat(Multi.createFrom().publisher(publisher).collect().asList().await().indefinitely()).isEmpty();
+        assertThat(Multi.createFrom().publisher(AdaptersToFlow.publisher(publisher)).collect().asList().await().indefinitely())
+                .isEmpty();
     }
 
     @Test
@@ -232,7 +234,8 @@ public abstract class ToRSPublisherTCK<T> {
             return;
         }
         Publisher<String> publisher = converter().toRSPublisher(instance.get());
-        assertThat(Multi.createFrom().publisher(publisher).collect().asList().await().indefinitely()).isEmpty();
+        assertThat(Multi.createFrom().publisher(AdaptersToFlow.publisher(publisher)).collect().asList().await().indefinitely())
+                .isEmpty();
     }
 
     @Test
@@ -243,7 +246,8 @@ public abstract class ToRSPublisherTCK<T> {
             return;
         }
         Publisher<String> publisher = converter().toRSPublisher(instance.get());
-        assertThat(Multi.createFrom().publisher(publisher).collect().asList().await().indefinitely()).isEmpty();
+        assertThat(Multi.createFrom().publisher(AdaptersToFlow.publisher(publisher)).collect().asList().await().indefinitely())
+                .isEmpty();
     }
 
 }

@@ -3,11 +3,14 @@ package io.smallrye.reactive.converters.rxjava1;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Flow;
 
 import org.reactivestreams.Publisher;
 
 import hu.akarnokd.rxjava.interop.RxJavaInterop;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import mutiny.zero.flow.adapters.AdaptersToFlow;
+import mutiny.zero.flow.adapters.AdaptersToReactiveStreams;
 import rx.Emitter;
 import rx.Observable;
 
@@ -70,6 +73,12 @@ public class ObservableConverter implements ReactiveTypeConverter<Observable> {
         return RxJavaInterop.toV2Flowable(instance);
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public <X> Flow.Publisher<X> toFlowPublisher(Observable instance) {
+        return AdaptersToFlow.publisher(RxJavaInterop.toV2Flowable(instance));
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public Observable fromPublisher(Publisher publisher) {
@@ -91,6 +100,11 @@ public class ObservableConverter implements ReactiveTypeConverter<Observable> {
     @Override
     public <X> Observable fromCompletionStage(CompletionStage<X> cs) {
         return Observable.create(emitter -> toStreamEvents(cs, emitter), Emitter.BackpressureMode.ERROR);
+    }
+
+    @Override
+    public <X> Observable fromFlowPublisher(Flow.Publisher<X> publisher) {
+        return RxJavaInterop.toV1Observable(AdaptersToReactiveStreams.publisher(publisher));
     }
 
     @Override

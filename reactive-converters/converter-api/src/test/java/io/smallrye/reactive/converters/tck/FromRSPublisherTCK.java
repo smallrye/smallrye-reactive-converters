@@ -18,6 +18,7 @@ import org.reactivestreams.Publisher;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import mutiny.zero.flow.adapters.AdaptersToReactiveStreams;
 
 public abstract class FromRSPublisherTCK<T> {
 
@@ -34,7 +35,7 @@ public abstract class FromRSPublisherTCK<T> {
     @Test
     public void testWithImmediateValue() {
         String uuid = UUID.randomUUID().toString();
-        Publisher<String> publisher = Multi.createFrom().item(uuid);
+        Publisher<String> publisher = AdaptersToReactiveStreams.publisher(Multi.createFrom().item(uuid));
         T instance = converter()
                 .fromPublisher(publisher);
         String res = getOne(instance);
@@ -48,9 +49,9 @@ public abstract class FromRSPublisherTCK<T> {
     @Test
     public void testWithAsynchronousValue() {
         String uuid = UUID.randomUUID().toString();
-        Publisher<String> publisher = Uni.createFrom().item(uuid)
+        Publisher<String> publisher = AdaptersToReactiveStreams.publisher(Uni.createFrom().item(uuid)
                 .onItem().delayIt().by(Duration.ofMillis(10))
-                .toMulti();
+                .toMulti());
         T instance = converter()
                 .fromPublisher(publisher);
         String res = getOne(instance);
@@ -63,7 +64,7 @@ public abstract class FromRSPublisherTCK<T> {
 
     @Test
     public void testWithImmediateFailure() {
-        Publisher<String> publisher = Multi.createFrom().failure(new BoomException());
+        Publisher<String> publisher = AdaptersToReactiveStreams.publisher(Multi.createFrom().failure(new BoomException()));
         T instance = converter()
                 .fromPublisher(publisher);
 
@@ -74,12 +75,12 @@ public abstract class FromRSPublisherTCK<T> {
 
     @Test
     public void testWithAsynchronousFailure() {
-        Publisher<String> publisher = Uni.createFrom().item("X")
+        Publisher<String> publisher = AdaptersToReactiveStreams.publisher(Uni.createFrom().item("X")
                 .onItem().delayIt().by(Duration.ofMillis(10))
                 .onItem().failWith(s -> {
                     throw new BoomException();
                 })
-                .toMulti();
+                .toMulti());
         T instance = converter()
                 .fromPublisher(publisher);
 
@@ -90,16 +91,16 @@ public abstract class FromRSPublisherTCK<T> {
 
     @Test
     public void testWithImmediateNullValue() {
-        Publisher<String> publisher = Multi.createFrom().item("X").map(s -> null);
+        Publisher<String> publisher = AdaptersToReactiveStreams.publisher(Multi.createFrom().item("X").map(s -> null));
         assertNullPointerExceptionWhenNullIsEmitted(publisher);
     }
 
     @Test
     public void testWithAsynchronousNullValue() {
-        Publisher<String> publisher = Uni.createFrom().item("X")
+        Publisher<String> publisher = AdaptersToReactiveStreams.publisher(Uni.createFrom().item("X")
                 .onItem().delayIt().by(Duration.ofMillis(10))
                 .toMulti()
-                .map(s -> null);
+                .map(s -> null));
         assertNullPointerExceptionWhenNullIsEmitted(publisher);
     }
 
@@ -116,7 +117,7 @@ public abstract class FromRSPublisherTCK<T> {
 
     @Test
     public void testWithNever() throws InterruptedException {
-        Publisher<String> never = Multi.createFrom().nothing();
+        Publisher<String> never = AdaptersToReactiveStreams.publisher(Multi.createFrom().nothing());
         T instance = converter().fromPublisher(never);
         CountDownLatch latch = new CountDownLatch(1);
         Future<?> future = Executors.newSingleThreadExecutor().submit(() -> {
@@ -130,7 +131,7 @@ public abstract class FromRSPublisherTCK<T> {
 
     @Test
     public void testWithEmpty() {
-        Publisher<String> empty = Multi.createFrom().empty();
+        Publisher<String> empty = AdaptersToReactiveStreams.publisher(Multi.createFrom().empty());
         T instance = converter().fromPublisher(empty);
         if (!converter().emitAtMostOneItem()) {
             int count = getAll(instance).size();
@@ -147,7 +148,8 @@ public abstract class FromRSPublisherTCK<T> {
 
     @Test
     public void testWithMultipleValues() {
-        Publisher<String> count = Multi.createFrom().range(0, 10).map(i -> Integer.toString(i));
+        Publisher<String> count = AdaptersToReactiveStreams
+                .publisher(Multi.createFrom().range(0, 10).map(i -> Integer.toString(i)));
         T instance = converter().fromPublisher(count);
         if (converter().emitItems() && !converter().emitAtMostOneItem()) {
             List<String> list = getAll(instance);
@@ -164,12 +166,12 @@ public abstract class FromRSPublisherTCK<T> {
     @SuppressWarnings("CatchMayIgnoreException")
     @Test
     public void testWithMultipleValuesFollowedByAFailure() {
-        Publisher<String> publisher = Multi.createFrom().items("a", "b", "c").map(s -> {
+        Publisher<String> publisher = AdaptersToReactiveStreams.publisher(Multi.createFrom().items("a", "b", "c").map(s -> {
             if (s.equalsIgnoreCase("c")) {
                 throw new BoomException();
             }
             return s;
-        });
+        }));
         T instance = converter().fromPublisher(publisher);
         if (converter().emitItems()) {
             try {
