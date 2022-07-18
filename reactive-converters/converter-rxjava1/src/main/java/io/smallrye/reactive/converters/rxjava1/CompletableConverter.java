@@ -4,11 +4,14 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Flow;
 
 import org.reactivestreams.Publisher;
 
 import hu.akarnokd.rxjava.interop.RxJavaInterop;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import mutiny.zero.flow.adapters.AdaptersToFlow;
+import mutiny.zero.flow.adapters.AdaptersToReactiveStreams;
 import rx.Completable;
 
 /**
@@ -77,8 +80,18 @@ public class CompletableConverter implements ReactiveTypeConverter<Completable> 
     }
 
     @Override
+    public <X> Flow.Publisher<X> toFlowPublisher(Completable instance) {
+        return AdaptersToFlow.publisher(RxJavaInterop.toV2Flowable(instance.toObservable()));
+    }
+
+    @Override
     public <X> Completable fromPublisher(Publisher<X> publisher) {
         return RxJavaInterop.toV1Observable(publisher).toCompletable();
+    }
+
+    @Override
+    public <X> Completable fromFlowPublisher(Flow.Publisher<X> publisher) {
+        return RxJavaInterop.toV1Observable(AdaptersToReactiveStreams.publisher(publisher)).toCompletable();
     }
 
     @Override

@@ -2,10 +2,13 @@ package io.smallrye.reactive.converters.reactor;
 
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Flow;
 
 import org.reactivestreams.Publisher;
 
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import mutiny.zero.flow.adapters.AdaptersToFlow;
+import mutiny.zero.flow.adapters.AdaptersToReactiveStreams;
 import reactor.core.publisher.Flux;
 
 @SuppressWarnings("rawtypes")
@@ -21,6 +24,12 @@ public class FluxConverter implements ReactiveTypeConverter<Flux> {
     @Override
     public <X> Publisher<X> toRSPublisher(Flux instance) {
         return instance;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <X> Flow.Publisher<X> toFlowPublisher(Flux instance) {
+        return AdaptersToFlow.publisher(instance);
     }
 
     @Override
@@ -40,6 +49,11 @@ public class FluxConverter implements ReactiveTypeConverter<Flux> {
     @Override
     public <X> Flux fromPublisher(Publisher<X> publisher) {
         return Flux.from(publisher);
+    }
+
+    @Override
+    public <X> Flux fromFlowPublisher(Flow.Publisher<X> publisher) {
+        return Flux.from(AdaptersToReactiveStreams.publisher(publisher));
     }
 
     @Override

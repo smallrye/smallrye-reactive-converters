@@ -3,6 +3,7 @@ package io.smallrye.reactive.converters;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Flow;
 
 import org.junit.Test;
 import org.reactivestreams.Publisher;
@@ -35,7 +36,17 @@ public class RegistryTest {
         }
 
         @Override
+        public <X> Flow.Publisher<X> toFlowPublisher(CompletionStage instance) {
+            return null;
+        }
+
+        @Override
         public <X> CompletionStage fromPublisher(Publisher<X> publisher) {
+            return null;
+        }
+
+        @Override
+        public <X> CompletionStage fromFlowPublisher(Flow.Publisher<X> publisher) {
             return null;
         }
 

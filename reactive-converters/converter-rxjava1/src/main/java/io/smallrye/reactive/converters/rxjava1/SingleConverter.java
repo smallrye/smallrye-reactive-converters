@@ -4,11 +4,14 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Flow;
 
 import org.reactivestreams.Publisher;
 
 import hu.akarnokd.rxjava.interop.RxJavaInterop;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import mutiny.zero.flow.adapters.AdaptersToFlow;
+import mutiny.zero.flow.adapters.AdaptersToReactiveStreams;
 import rx.Single;
 
 /**
@@ -59,6 +62,11 @@ public class SingleConverter implements ReactiveTypeConverter<Single> {
     }
 
     @Override
+    public <X> Flow.Publisher<X> toFlowPublisher(Single instance) {
+        return AdaptersToFlow.publisher(RxJavaInterop.toV2Flowable(instance.toObservable()));
+    }
+
+    @Override
     public <X> Single<X> fromCompletionStage(CompletionStage<X> cs) {
         CompletionStage<X> future = Objects.requireNonNull(cs);
         return Single
@@ -80,6 +88,11 @@ public class SingleConverter implements ReactiveTypeConverter<Single> {
     @Override
     public <X> Single fromPublisher(Publisher<X> publisher) {
         return RxJavaInterop.toV1Observable(publisher).first().toSingle();
+    }
+
+    @Override
+    public <X> Single fromFlowPublisher(Flow.Publisher<X> publisher) {
+        return RxJavaInterop.toV1Observable(AdaptersToReactiveStreams.publisher(publisher)).first().toSingle();
     }
 
     @Override

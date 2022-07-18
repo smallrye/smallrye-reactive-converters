@@ -3,12 +3,15 @@ package io.smallrye.reactive.converters.rxjava3;
 import java.util.Objects;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Flow;
 
 import org.reactivestreams.Publisher;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import mutiny.zero.flow.adapters.AdaptersToFlow;
+import mutiny.zero.flow.adapters.AdaptersToReactiveStreams;
 
 /**
  * Converter handling the RX Java 3 {@link Completable} type.
@@ -65,8 +68,18 @@ public class CompletableConverter implements ReactiveTypeConverter<Completable> 
     }
 
     @Override
+    public <X> Flow.Publisher<X> toFlowPublisher(Completable instance) {
+        return AdaptersToFlow.publisher(toRSPublisher(instance));
+    }
+
+    @Override
     public <X> Completable fromPublisher(Publisher<X> publisher) {
         return Flowable.fromPublisher(publisher).ignoreElements();
+    }
+
+    @Override
+    public <X> Completable fromFlowPublisher(Flow.Publisher<X> publisher) {
+        return fromPublisher(AdaptersToReactiveStreams.publisher(publisher));
     }
 
     @Override

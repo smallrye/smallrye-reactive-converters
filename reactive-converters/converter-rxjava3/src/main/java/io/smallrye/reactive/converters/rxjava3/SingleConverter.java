@@ -3,12 +3,15 @@ package io.smallrye.reactive.converters.rxjava3;
 import java.util.Objects;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Flow;
 
 import org.reactivestreams.Publisher;
 
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import mutiny.zero.flow.adapters.AdaptersToFlow;
+import mutiny.zero.flow.adapters.AdaptersToReactiveStreams;
 
 /**
  * Converter handling the RX Java 3 {@link Single} type.
@@ -51,6 +54,11 @@ public class SingleConverter implements ReactiveTypeConverter<Single> {
     }
 
     @Override
+    public <X> Flow.Publisher<X> toFlowPublisher(Single instance) {
+        return AdaptersToFlow.publisher(toRSPublisher(instance));
+    }
+
+    @Override
     public <X> Single<X> fromCompletionStage(CompletionStage<X> cs) {
         CompletionStage<X> future = Objects.requireNonNull(cs);
         return Single
@@ -68,6 +76,11 @@ public class SingleConverter implements ReactiveTypeConverter<Single> {
     @Override
     public <X> Single fromPublisher(Publisher<X> publisher) {
         return Flowable.fromPublisher(publisher).firstOrError();
+    }
+
+    @Override
+    public <X> Single fromFlowPublisher(Flow.Publisher<X> publisher) {
+        return fromPublisher(AdaptersToReactiveStreams.publisher(publisher));
     }
 
     @Override

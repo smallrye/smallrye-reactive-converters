@@ -13,6 +13,7 @@ import io.smallrye.mutiny.Uni;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
 import io.smallrye.reactive.converters.Registry;
 import io.smallrye.reactive.converters.tck.ToRSPublisherTCK;
+import mutiny.zero.flow.adapters.AdaptersToReactiveStreams;
 
 @SuppressWarnings("rawtypes")
 public class PublisherBuilderToRSPublisherTest extends ToRSPublisherTCK<PublisherBuilder> {
@@ -32,9 +33,9 @@ public class PublisherBuilderToRSPublisherTest extends ToRSPublisherTCK<Publishe
 
     @Override
     protected Optional<PublisherBuilder> createInstanceEmittingASingleValueAsynchronously(String value) {
-        return Optional.of(ReactiveStreams.fromPublisher(Uni.createFrom().item(value)
+        return Optional.of(ReactiveStreams.fromPublisher(AdaptersToReactiveStreams.publisher(Uni.createFrom().item(value)
                 .onItem().delayIt().by(Duration.ofMillis(10))
-                .toMulti()));
+                .toMulti())));
     }
 
     @Override
@@ -44,9 +45,9 @@ public class PublisherBuilderToRSPublisherTest extends ToRSPublisherTCK<Publishe
 
     @Override
     protected PublisherBuilder createInstanceFailingAsynchronously(RuntimeException e) {
-        Publisher<String> publisher = Uni.createFrom().item("x")
+        Publisher<String> publisher = AdaptersToReactiveStreams.publisher(Uni.createFrom().item("x")
                 .onItem().delayIt().by(Duration.ofMillis(10))
-                .toMulti();
+                .toMulti());
         return ReactiveStreams.fromPublisher(publisher)
                 .map(s -> {
                     throw e;
@@ -93,7 +94,10 @@ public class PublisherBuilderToRSPublisherTest extends ToRSPublisherTCK<Publishe
 
     @Override
     protected Optional<PublisherBuilder> never() {
-        return Optional.of(ReactiveStreams.fromPublisher(Multi.createFrom().nothing()));
+        return Optional.of(
+                ReactiveStreams.fromPublisher(
+                        AdaptersToReactiveStreams.publisher(
+                                Multi.createFrom().nothing())));
     }
 
     @Override

@@ -3,12 +3,15 @@ package io.smallrye.reactive.converters.rxjava2;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Flow;
 
 import org.reactivestreams.Publisher;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.smallrye.reactive.converters.ReactiveTypeConverter;
+import mutiny.zero.flow.adapters.AdaptersToFlow;
+import mutiny.zero.flow.adapters.AdaptersToReactiveStreams;
 
 /**
  * Converter handling the RX Java 2 {@link Flowable} type.
@@ -52,6 +55,12 @@ public class FlowableConverter implements ReactiveTypeConverter<Flowable> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public <X> Flow.Publisher<X> toFlowPublisher(Flowable instance) {
+        return AdaptersToFlow.publisher(instance);
+    }
+
+    @Override
     public Flowable fromPublisher(Publisher publisher) {
         if (publisher instanceof Flowable) {
             return (Flowable) publisher;
@@ -85,6 +94,11 @@ public class FlowableConverter implements ReactiveTypeConverter<Flowable> {
                 }
             }
         }), BackpressureStrategy.BUFFER);
+    }
+
+    @Override
+    public <X> Flowable fromFlowPublisher(Flow.Publisher<X> publisher) {
+        return fromPublisher(AdaptersToReactiveStreams.publisher(publisher));
     }
 
     @Override
