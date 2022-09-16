@@ -43,7 +43,7 @@
     </scm>
 
     <properties>
-        <mutiny.version>2.0.0-milestone1</mutiny.version>
+        <mutiny.version>2.0.0-milestone2</mutiny.version>
         <mutiny-zero.version>0.4.3</mutiny-zero.version>
 
         <jackson.version>2.13.3</jackson.version>
