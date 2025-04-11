@@ -10,6 +10,8 @@
 
     <artifactId>smallrye-reactive-converter-api</artifactId>
 
+    <name>SmallRye Reactive Converters: API</name>
+
     <dependencies>
         <dependency>
             <groupId>org.reactivestreams</groupId>

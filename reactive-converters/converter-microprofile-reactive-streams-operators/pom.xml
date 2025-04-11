@@ -10,6 +10,8 @@
 
     <artifactId>smallrye-reactive-converter-reactive-streams-operators</artifactId>
 
+    <name>SmallRye Reactive Converters: MicroProfile Reactive Streams Operators</name>
+
     <dependencies>
         <dependency>
             <groupId>io.smallrye.reactive</groupId>
