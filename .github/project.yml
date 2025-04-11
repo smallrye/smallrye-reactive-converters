@@ -2,4 +2,3 @@ name: SmallRye Reactive Converters
 release:
   current-version: 3.0.2
   next-version: 3.1.0-SNAPSHOT
-
