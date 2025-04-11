@@ -10,6 +10,8 @@
 
     <artifactId>smallrye-reactive-converter-reactor</artifactId>
 
+    <name>SmallRye Reactive Converters: Reactor</name>
+
     <dependencies>
         <dependency>
             <groupId>io.reactivex.rxjava2</groupId>

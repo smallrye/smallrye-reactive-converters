@@ -10,6 +10,8 @@
 
     <artifactId>smallrye-reactive-converter-rxjava3</artifactId>
 
+    <name>SmallRye Reactive Converters: RxJava 3</name>
+
     <dependencies>
         <dependency>
             <groupId>io.smallrye.reactive</groupId>
